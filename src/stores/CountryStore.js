@@ -14,17 +14,24 @@ class CountryStore{
 
 	handleValueChange = value=>{		
 		this.value = value
-		this.loadCountries()		
-
 	}
 
-	loadCountries = async ()=>{
+	fetchCountries = async ()=>{
 
 		await this.fetchByName.fetch({
 			method:'get',
 			url:`name/${this.value}`,
 		})
 
+		
+
+		console.log( this.fetchByName.data[0])
+/*
+		this.countries=[
+			...this.fetchByCode.data,
+			...this.fetchByName.data
+		]
+*/		
 	}
 }
 
