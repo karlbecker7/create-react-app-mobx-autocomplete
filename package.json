@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
+    "jsxstyle": "^1.0.2",
     "lodash": "^4.17.4",
     "mobx": "^2.5.0",
     "mobx-react": "^3.5.5",

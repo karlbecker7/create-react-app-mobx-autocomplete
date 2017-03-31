@@ -1,37 +1,45 @@
 import {extendObservable, action} from 'mobx'
-import Fetch from '../core/Fetch.js'
+import Fetch from '../core/Fetch'
+import { flatten, uniqBy, find } from 'lodash'
 
 class CountryStore{
 	fetchByName = new Fetch()
 	fetchByCode = new Fetch()
 
 	constructor(){
-		extendObservable(this, {
-			value:'',
-			countries:[]
+		extendObservable(this, {			
+			countries:[],
+			selectedCountry:{}
 		})
 	}
 
-	handleValueChange = value=>{		
-		this.value = value
+	handleSelectCountry = selectedCountry=>{		
+		this.selectedCountry = find(this.countries, country=>country.alpha2Code===selectedCountry.value)
 	}
 
-	fetchCountries = async ()=>{
+	fetchCountries = (value)=>{
 
-		await this.fetchByName.fetch({
-			method:'get',
-			url:`name/${this.value}`,
+		const fetchByName = this.fetchByName.fetch({
+			url:`name/${value}`
 		})
 
-		
+		const fetchByCode = this.fetchByCode.fetch({
+			url:`alpha/${value}`
+		})
 
-		console.log( this.fetchByName.data[0])
-/*
-		this.countries=[
-			...this.fetchByCode.data,
-			...this.fetchByName.data
-		]
-*/		
+
+		Promise.all([fetchByName,fetchByCode]).then(values=>{
+
+			this.countries = uniqBy(
+				flatten(values).filter(country => !!country),
+				country => country.alpha2Code
+	       	)
+
+	       	console.log(this.countries);
+			
+
+
+		})
 	}
 }
 
